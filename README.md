@@ -26,6 +26,7 @@ Please read the [contribution guidelines](https://github.com/opencv/opencv/wiki/
 mkdir build
 cd build
 
+PREFIX=`pyenv prefix`
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D CMAKE_INSTALL_PREFIX="$PREFIX" \
     -D PYTHON3_EXECUTABLE="$PREFIX"/bin/python3.6 \
