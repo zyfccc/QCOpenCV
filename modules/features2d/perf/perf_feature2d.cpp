@@ -58,11 +58,12 @@ PERF_TEST_P(feature2d, detectAndExtract, testing::Combine(testing::Values(DETECT
     ASSERT_TRUE(detector);
 
     declare.in(img);
-    Mat mask;
+    Mat mask, saliency;
     vector<KeyPoint> points;
     Mat descriptors;
 
-    TEST_CYCLE() detector->detectAndCompute(img, mask, points, descriptors, false);
+    TEST_CYCLE()
+    detector->detectAndCompute(img, mask, saliency, points, descriptors, false);
 
     EXPECT_GT(points.size(), 20u);
     EXPECT_EQ((size_t)descriptors.rows, points.size());

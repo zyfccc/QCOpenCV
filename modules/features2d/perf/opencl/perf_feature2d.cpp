@@ -62,13 +62,14 @@ OCL_PERF_TEST_P(feature2d, detectAndExtract, testing::Combine(testing::Values(DE
     ASSERT_FALSE(mimg.empty());
     ASSERT_TRUE(detector);
 
-    UMat img, mask;
+    UMat img, mask, saliency;
     mimg.copyTo(img);
     declare.in(img);
     vector<KeyPoint> points;
     UMat descriptors;
 
-    OCL_TEST_CYCLE() detector->detectAndCompute(img, mask, points, descriptors, false);
+    OCL_TEST_CYCLE()
+    detector->detectAndCompute(img, mask, saliency, points, descriptors, false);
 
     EXPECT_GT(points.size(), 20u);
     EXPECT_EQ((size_t)descriptors.rows, points.size());

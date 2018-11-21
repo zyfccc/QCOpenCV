@@ -407,6 +407,7 @@ public:
     /** Detects keypoints and computes the descriptors. */
     virtual void detectAndComputeAsync(InputArray image,
                                        InputArray mask,
+                                       InputArray saliency,
                                        OutputArray keypoints,
                                        OutputArray descriptors,
                                        bool useProvidedKeypoints = false,

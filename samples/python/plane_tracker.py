@@ -132,7 +132,7 @@ class PlaneTracker:
 
     def detect_features(self, frame):
         '''detect_features(self, frame) -> keypoints, descrs'''
-        keypoints, descrs = self.detector.detectAndCompute(frame, None)
+        keypoints, descrs = self.detector.detectAndCompute(frame, None, None)
         if descrs is None:  # detectAndCompute returns descs=None if not keypoints found
             descrs = []
         return keypoints, descrs

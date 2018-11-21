@@ -105,8 +105,8 @@ namespace cv
             return NORM_L2;
         }
 
-        void detectAndCompute(InputArray image, InputArray mask,
-                              std::vector<KeyPoint>& keypoints,
+        void detectAndCompute(InputArray image, InputArray mask, InputArray saliency,
+                              std::vector<KeyPoint> &keypoints,
                               OutputArray descriptors,
                               bool useProvidedKeypoints) CV_OVERRIDE
         {

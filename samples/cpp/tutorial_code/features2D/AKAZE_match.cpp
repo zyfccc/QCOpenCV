@@ -29,8 +29,8 @@ int main(int argc, char* argv[])
     Mat desc1, desc2;
 
     Ptr<AKAZE> akaze = AKAZE::create();
-    akaze->detectAndCompute(img1, noArray(), kpts1, desc1);
-    akaze->detectAndCompute(img2, noArray(), kpts2, desc2);
+    akaze->detectAndCompute(img1, noArray(), noArray(), kpts1, desc1);
+    akaze->detectAndCompute(img2, noArray(), noArray(), kpts2, desc2);
     //! [AKAZE]
 
     //! [2-nn matching]

@@ -75,7 +75,7 @@ protected:
       double confidence;
   };
 
-  virtual void detect( InputArray image, std::vector<KeyPoint>& keypoints, InputArray mask=noArray() ) CV_OVERRIDE;
+  virtual void detect(InputArray image, std::vector<KeyPoint> &keypoints, InputArray mask = noArray(), InputArray saliency = noArray()) CV_OVERRIDE;
   virtual void findBlobs(InputArray image, InputArray binaryImage, std::vector<Center> &centers) const;
 
   Params params;
@@ -306,7 +306,7 @@ void SimpleBlobDetectorImpl::findBlobs(InputArray _image, InputArray _binaryImag
 #endif
 }
 
-void SimpleBlobDetectorImpl::detect(InputArray image, std::vector<cv::KeyPoint>& keypoints, InputArray mask)
+void SimpleBlobDetectorImpl::detect(InputArray image, std::vector<cv::KeyPoint> &keypoints, InputArray mask, InputArray saliency)
 {
     CV_INSTRUMENT_REGION();
 

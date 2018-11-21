@@ -112,7 +112,8 @@ PERF_TEST_P(Image_NFeatures, ORB,
         const cv::cuda::GpuMat d_img(img);
         cv::cuda::GpuMat d_keypoints, d_descriptors;
 
-        TEST_CYCLE() d_orb->detectAndComputeAsync(d_img, cv::noArray(), d_keypoints, d_descriptors);
+        TEST_CYCLE()
+        d_orb->detectAndComputeAsync(d_img, cv::noArray(), cv::noArray(), d_keypoints, d_descriptors);
 
         std::vector<cv::KeyPoint> gpu_keypoints;
         d_orb->convert(d_keypoints, gpu_keypoints);
@@ -134,7 +135,8 @@ PERF_TEST_P(Image_NFeatures, ORB,
         std::vector<cv::KeyPoint> cpu_keypoints;
         cv::Mat cpu_descriptors;
 
-        TEST_CYCLE() orb->detectAndCompute(img, cv::noArray(), cpu_keypoints, cpu_descriptors);
+        TEST_CYCLE()
+        orb->detectAndCompute(img, cv::noArray(), cv::noArray(), cpu_keypoints, cpu_descriptors);
 
         SANITY_CHECK_KEYPOINTS(cpu_keypoints);
         SANITY_CHECK(cpu_descriptors);

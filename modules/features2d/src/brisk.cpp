@@ -87,12 +87,12 @@ public:
         const std::vector<int> &numberList, float dMax=5.85f, float dMin=8.2f,
         const std::vector<int> &indexChange=std::vector<int>());
 
-    void detectAndCompute( InputArray image, InputArray mask,
-                     CV_OUT std::vector<KeyPoint>& keypoints,
-                     OutputArray descriptors,
-                     bool useProvidedKeypoints ) CV_OVERRIDE;
+    void detectAndCompute(InputArray image, InputArray mask, InputArray saliency,
+                          CV_OUT std::vector<KeyPoint> &keypoints,
+                          OutputArray descriptors,
+                          bool useProvidedKeypoints) CV_OVERRIDE;
 
-protected:
+  protected:
 
     void computeKeypointsNoOrientation(InputArray image, InputArray mask, std::vector<KeyPoint>& keypoints) const;
     void computeDescriptorsAndOrOrientation(InputArray image, InputArray mask, std::vector<KeyPoint>& keypoints,
@@ -634,9 +634,8 @@ RoiPredicate(const float minX, const float minY, const float maxX, const float m
 }
 
 // computes the descriptor
-void
-BRISK_Impl::detectAndCompute( InputArray _image, InputArray _mask, std::vector<KeyPoint>& keypoints,
-                              OutputArray _descriptors, bool useProvidedKeypoints)
+void BRISK_Impl::detectAndCompute(InputArray _image, InputArray _mask, InputArray _saliency, std::vector<KeyPoint> &keypoints,
+                                  OutputArray _descriptors, bool useProvidedKeypoints)
 {
   bool doOrientation=true;
 

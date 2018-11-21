@@ -35,8 +35,8 @@ class UMat(NewOpenCVTests):
         orb = cv.ORB_create()
 
         img1, img2 = cv.UMat(img1), cv.UMat(img2)
-        ps1, descs_umat1 = orb.detectAndCompute(img1, None)
-        ps2, descs_umat2 = orb.detectAndCompute(img2, None)
+        ps1, descs_umat1 = orb.detectAndCompute(img1, None, None)
+        ps2, descs_umat2 = orb.detectAndCompute(img2, None, None)
 
         self.assertIsInstance(descs_umat1, cv.UMat)
         self.assertIsInstance(descs_umat2, cv.UMat)

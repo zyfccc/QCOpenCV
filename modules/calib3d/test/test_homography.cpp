@@ -43,7 +43,10 @@
 
 #include "test_precomp.hpp"
 
-namespace opencv_test { namespace {
+namespace opencv_test
+{
+namespace
+{
 
 #define CALIB3D_HOMOGRAPHY_ERROR_MATRIX_SIZE 1
 #define CALIB3D_HOMOGRAPHY_ERROR_MATRIX_DIFF 2
@@ -72,31 +75,30 @@ int METHOD[METHODS_COUNT] = {0, cv::RANSAC, cv::LMEDS, cv::RHO};
 using namespace cv;
 using namespace std;
 
-class CV_HomographyTest: public cvtest::ArrayTest
+class CV_HomographyTest : public cvtest::ArrayTest
 {
-public:
+  public:
     CV_HomographyTest();
     ~CV_HomographyTest();
 
-    void run (int);
+    void run(int);
 
-protected:
-
+  protected:
     int method;
     int image_size;
     double reproj_threshold;
     double sigma;
 
-private:
+  private:
     float max_diff, max_2diff;
-    bool check_matrix_size(const cv::Mat& H);
-    bool check_matrix_diff(const cv::Mat& original, const cv::Mat& found, const int norm_type, double &diff);
-    int check_ransac_mask_1(const Mat& src, const Mat& mask);
-    int check_ransac_mask_2(const Mat& original_mask, const Mat& found_mask);
+    bool check_matrix_size(const cv::Mat &H);
+    bool check_matrix_diff(const cv::Mat &original, const cv::Mat &found, const int norm_type, double &diff);
+    int check_ransac_mask_1(const Mat &src, const Mat &mask);
+    int check_ransac_mask_2(const Mat &original_mask, const Mat &found_mask);
 
-    void print_information_1(int j, int N, int method, const Mat& H);
-    void print_information_2(int j, int N, int method, const Mat& H, const Mat& H_res, int k, double diff);
-    void print_information_3(int method, int j, int N, const Mat& mask);
+    void print_information_1(int j, int N, int method, const Mat &H);
+    void print_information_2(int j, int N, int method, const Mat &H, const Mat &H_res, int k, double diff);
+    void print_information_3(int method, int j, int N, const Mat &mask);
     void print_information_4(int method, int j, int N, int k, int l, double diff);
     void print_information_5(int method, int j, int N, int l, double diff);
     void print_information_6(int method, int j, int N, int k, double diff, bool value);
@@ -114,163 +116,355 @@ CV_HomographyTest::CV_HomographyTest() : max_diff(1e-2f), max_2diff(2e-2f)
 
 CV_HomographyTest::~CV_HomographyTest() {}
 
-bool CV_HomographyTest::check_matrix_size(const cv::Mat& H)
+bool CV_HomographyTest::check_matrix_size(const cv::Mat &H)
 {
     return (H.rows == 3) && (H.cols == 3);
 }
 
-bool CV_HomographyTest::check_matrix_diff(const cv::Mat& original, const cv::Mat& found, const int norm_type, double &diff)
+bool CV_HomographyTest::check_matrix_diff(const cv::Mat &original, const cv::Mat &found, const int norm_type, double &diff)
 {
     diff = cvtest::norm(original, found, norm_type);
     return diff <= max_diff;
 }
 
-int CV_HomographyTest::check_ransac_mask_1(const Mat& src, const Mat& mask)
+int CV_HomographyTest::check_ransac_mask_1(const Mat &src, const Mat &mask)
 {
-    if (!(mask.cols == 1) && (mask.rows == src.cols)) return 1;
-    if (countNonZero(mask) < mask.rows) return 2;
-    for (int i = 0; i < mask.rows; ++i) if (mask.at<uchar>(i, 0) > 1) return 3;
+    if (!(mask.cols == 1) && (mask.rows == src.cols))
+        return 1;
+    if (countNonZero(mask) < mask.rows)
+        return 2;
+    for (int i = 0; i < mask.rows; ++i)
+        if (mask.at<uchar>(i, 0) > 1)
+            return 3;
     return 0;
 }
 
-int CV_HomographyTest::check_ransac_mask_2(const Mat& original_mask, const Mat& found_mask)
+int CV_HomographyTest::check_ransac_mask_2(const Mat &original_mask, const Mat &found_mask)
 {
-    if (!(found_mask.cols == 1) && (found_mask.rows == original_mask.rows)) return 1;
-    for (int i = 0; i < found_mask.rows; ++i) if (found_mask.at<uchar>(i, 0) > 1) return 2;
+    if (!(found_mask.cols == 1) && (found_mask.rows == original_mask.rows))
+        return 1;
+    for (int i = 0; i < found_mask.rows; ++i)
+        if (found_mask.at<uchar>(i, 0) > 1)
+            return 2;
     return 0;
 }
 
-void CV_HomographyTest::print_information_1(int j, int N, int _method, const Mat& H)
+void CV_HomographyTest::print_information_1(int j, int N, int _method, const Mat &H)
 {
-    cout << endl; cout << "Checking for homography matrix sizes..." << endl; cout << endl;
-    cout << "Type of srcPoints: "; if ((j>-1) && (j<2)) cout << "Mat of CV_32FC2"; else  cout << "vector <Point2f>";
-    cout << "   Type of dstPoints: "; if (j % 2 == 0) cout << "Mat of CV_32FC2"; else cout << "vector <Point2f>"; cout << endl;
-    cout << "Count of points: " << N << endl; cout << endl;
-    cout << "Method: "; if (_method == 0) cout << 0; else if (_method == 8) cout << "RANSAC"; else if (_method == cv::RHO) cout << "RHO"; else cout << "LMEDS"; cout << endl;
-    cout << "Homography matrix:" << endl; cout << endl;
-    cout << H << endl; cout << endl;
-    cout << "Number of rows: " << H.rows << "   Number of cols: " << H.cols << endl; cout << endl;
+    cout << endl;
+    cout << "Checking for homography matrix sizes..." << endl;
+    cout << endl;
+    cout << "Type of srcPoints: ";
+    if ((j > -1) && (j < 2))
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << "   Type of dstPoints: ";
+    if (j % 2 == 0)
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << endl;
+    cout << "Count of points: " << N << endl;
+    cout << endl;
+    cout << "Method: ";
+    if (_method == 0)
+        cout << 0;
+    else if (_method == 8)
+        cout << "RANSAC";
+    else if (_method == cv::RHO)
+        cout << "RHO";
+    else
+        cout << "LMEDS";
+    cout << endl;
+    cout << "Homography matrix:" << endl;
+    cout << endl;
+    cout << H << endl;
+    cout << endl;
+    cout << "Number of rows: " << H.rows << "   Number of cols: " << H.cols << endl;
+    cout << endl;
 }
 
-void CV_HomographyTest::print_information_2(int j, int N, int _method, const Mat& H, const Mat& H_res, int k, double diff)
+void CV_HomographyTest::print_information_2(int j, int N, int _method, const Mat &H, const Mat &H_res, int k, double diff)
 {
-    cout << endl; cout << "Checking for accuracy of homography matrix computing..." << endl; cout << endl;
-    cout << "Type of srcPoints: "; if ((j>-1) && (j<2)) cout << "Mat of CV_32FC2"; else  cout << "vector <Point2f>";
-    cout << "   Type of dstPoints: "; if (j % 2 == 0) cout << "Mat of CV_32FC2"; else cout << "vector <Point2f>"; cout << endl;
-    cout << "Count of points: " << N << endl; cout << endl;
-    cout << "Method: "; if (_method == 0) cout << 0; else if (_method == 8) cout << "RANSAC"; else if (_method == cv::RHO) cout << "RHO"; else cout << "LMEDS"; cout << endl;
-    cout << "Original matrix:" << endl; cout << endl;
-    cout << H << endl; cout << endl;
-    cout << "Found matrix:" << endl; cout << endl;
-    cout << H_res << endl; cout << endl;
-    cout << "Norm type using in criteria: "; if (NORM_TYPE[k] == 1) cout << "INF"; else if (NORM_TYPE[k] == 2) cout << "L1"; else cout << "L2"; cout << endl;
+    cout << endl;
+    cout << "Checking for accuracy of homography matrix computing..." << endl;
+    cout << endl;
+    cout << "Type of srcPoints: ";
+    if ((j > -1) && (j < 2))
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << "   Type of dstPoints: ";
+    if (j % 2 == 0)
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << endl;
+    cout << "Count of points: " << N << endl;
+    cout << endl;
+    cout << "Method: ";
+    if (_method == 0)
+        cout << 0;
+    else if (_method == 8)
+        cout << "RANSAC";
+    else if (_method == cv::RHO)
+        cout << "RHO";
+    else
+        cout << "LMEDS";
+    cout << endl;
+    cout << "Original matrix:" << endl;
+    cout << endl;
+    cout << H << endl;
+    cout << endl;
+    cout << "Found matrix:" << endl;
+    cout << endl;
+    cout << H_res << endl;
+    cout << endl;
+    cout << "Norm type using in criteria: ";
+    if (NORM_TYPE[k] == 1)
+        cout << "INF";
+    else if (NORM_TYPE[k] == 2)
+        cout << "L1";
+    else
+        cout << "L2";
+    cout << endl;
     cout << "Difference between matrices: " << diff << endl;
-    cout << "Maximum allowed difference: " << max_diff << endl; cout << endl;
+    cout << "Maximum allowed difference: " << max_diff << endl;
+    cout << endl;
 }
 
-void CV_HomographyTest::print_information_3(int _method, int j, int N, const Mat& mask)
+void CV_HomographyTest::print_information_3(int _method, int j, int N, const Mat &mask)
 {
-    cout << endl; cout << "Checking for inliers/outliers mask..." << endl; cout << endl;
-    cout << "Type of srcPoints: "; if ((j>-1) && (j<2)) cout << "Mat of CV_32FC2"; else  cout << "vector <Point2f>";
-    cout << "   Type of dstPoints: "; if (j % 2 == 0) cout << "Mat of CV_32FC2"; else cout << "vector <Point2f>"; cout << endl;
-    cout << "Count of points: " << N << endl; cout << endl;
-    cout << "Method: "; if (_method == RANSAC) cout << "RANSAC" << endl; else if (_method == cv::RHO) cout << "RHO" << endl; else cout << _method << endl;
-    cout << "Found mask:" << endl; cout << endl;
-    cout << mask << endl; cout << endl;
-    cout << "Number of rows: " << mask.rows << "   Number of cols: " << mask.cols << endl; cout << endl;
+    cout << endl;
+    cout << "Checking for inliers/outliers mask..." << endl;
+    cout << endl;
+    cout << "Type of srcPoints: ";
+    if ((j > -1) && (j < 2))
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << "   Type of dstPoints: ";
+    if (j % 2 == 0)
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << endl;
+    cout << "Count of points: " << N << endl;
+    cout << endl;
+    cout << "Method: ";
+    if (_method == RANSAC)
+        cout << "RANSAC" << endl;
+    else if (_method == cv::RHO)
+        cout << "RHO" << endl;
+    else
+        cout << _method << endl;
+    cout << "Found mask:" << endl;
+    cout << endl;
+    cout << mask << endl;
+    cout << endl;
+    cout << "Number of rows: " << mask.rows << "   Number of cols: " << mask.cols << endl;
+    cout << endl;
 }
 
 void CV_HomographyTest::print_information_4(int _method, int j, int N, int k, int l, double diff)
 {
-    cout << endl; cout << "Checking for accuracy of reprojection error computing..." << endl; cout << endl;
-    cout << "Method: "; if (_method == 0) cout << 0 << endl; else cout << "CV_LMEDS" << endl;
-    cout << "Type of srcPoints: "; if ((j>-1) && (j<2)) cout << "Mat of CV_32FC2"; else  cout << "vector <Point2f>";
-    cout << "   Type of dstPoints: "; if (j % 2 == 0) cout << "Mat of CV_32FC2"; else cout << "vector <Point2f>"; cout << endl;
+    cout << endl;
+    cout << "Checking for accuracy of reprojection error computing..." << endl;
+    cout << endl;
+    cout << "Method: ";
+    if (_method == 0)
+        cout << 0 << endl;
+    else
+        cout << "CV_LMEDS" << endl;
+    cout << "Type of srcPoints: ";
+    if ((j > -1) && (j < 2))
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << "   Type of dstPoints: ";
+    if (j % 2 == 0)
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << endl;
     cout << "Sigma of normal noise: " << sigma << endl;
     cout << "Count of points: " << N << endl;
     cout << "Number of point: " << k << endl;
-    cout << "Norm type using in criteria: "; if (NORM_TYPE[l] == 1) cout << "INF"; else if (NORM_TYPE[l] == 2) cout << "L1"; else cout << "L2"; cout << endl;
+    cout << "Norm type using in criteria: ";
+    if (NORM_TYPE[l] == 1)
+        cout << "INF";
+    else if (NORM_TYPE[l] == 2)
+        cout << "L1";
+    else
+        cout << "L2";
+    cout << endl;
     cout << "Difference with noise of point: " << diff << endl;
-    cout << "Maxumum allowed difference: " << max_2diff << endl; cout << endl;
+    cout << "Maxumum allowed difference: " << max_2diff << endl;
+    cout << endl;
 }
 
 void CV_HomographyTest::print_information_5(int _method, int j, int N, int l, double diff)
 {
-    cout << endl; cout << "Checking for accuracy of reprojection error computing..." << endl; cout << endl;
-    cout << "Method: "; if (_method == 0) cout << 0 << endl; else cout << "CV_LMEDS" << endl;
-    cout << "Type of srcPoints: "; if ((j>-1) && (j<2)) cout << "Mat of CV_32FC2"; else  cout << "vector <Point2f>";
-    cout << "   Type of dstPoints: "; if (j % 2 == 0) cout << "Mat of CV_32FC2"; else cout << "vector <Point2f>"; cout << endl;
+    cout << endl;
+    cout << "Checking for accuracy of reprojection error computing..." << endl;
+    cout << endl;
+    cout << "Method: ";
+    if (_method == 0)
+        cout << 0 << endl;
+    else
+        cout << "CV_LMEDS" << endl;
+    cout << "Type of srcPoints: ";
+    if ((j > -1) && (j < 2))
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << "   Type of dstPoints: ";
+    if (j % 2 == 0)
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << endl;
     cout << "Sigma of normal noise: " << sigma << endl;
     cout << "Count of points: " << N << endl;
-    cout << "Norm type using in criteria: "; if (NORM_TYPE[l] == 1) cout << "INF"; else if (NORM_TYPE[l] == 2) cout << "L1"; else cout << "L2"; cout << endl;
+    cout << "Norm type using in criteria: ";
+    if (NORM_TYPE[l] == 1)
+        cout << "INF";
+    else if (NORM_TYPE[l] == 2)
+        cout << "L1";
+    else
+        cout << "L2";
+    cout << endl;
     cout << "Difference with noise of points: " << diff << endl;
-    cout << "Maxumum allowed difference: " << max_diff << endl; cout << endl;
+    cout << "Maxumum allowed difference: " << max_diff << endl;
+    cout << endl;
 }
 
 void CV_HomographyTest::print_information_6(int _method, int j, int N, int k, double diff, bool value)
 {
-    cout << endl; cout << "Checking for inliers/outliers mask..." << endl; cout << endl;
-    cout << "Method: "; if (_method == RANSAC) cout << "RANSAC" << endl; else if (_method == cv::RHO) cout << "RHO" << endl; else cout << _method << endl;
-    cout << "Type of srcPoints: "; if ((j>-1) && (j<2)) cout << "Mat of CV_32FC2"; else  cout << "vector <Point2f>";
-    cout << "   Type of dstPoints: "; if (j % 2 == 0) cout << "Mat of CV_32FC2"; else cout << "vector <Point2f>"; cout << endl;
+    cout << endl;
+    cout << "Checking for inliers/outliers mask..." << endl;
+    cout << endl;
+    cout << "Method: ";
+    if (_method == RANSAC)
+        cout << "RANSAC" << endl;
+    else if (_method == cv::RHO)
+        cout << "RHO" << endl;
+    else
+        cout << _method << endl;
+    cout << "Type of srcPoints: ";
+    if ((j > -1) && (j < 2))
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << "   Type of dstPoints: ";
+    if (j % 2 == 0)
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << endl;
     cout << "Count of points: " << N << "   " << endl;
     cout << "Number of point: " << k << "   " << endl;
     cout << "Reprojection error for this point: " << diff << "   " << endl;
     cout << "Reprojection error threshold: " << reproj_threshold << "   " << endl;
-    cout << "Value of found mask: "<< value << endl; cout << endl;
+    cout << "Value of found mask: " << value << endl;
+    cout << endl;
 }
 
 void CV_HomographyTest::print_information_7(int _method, int j, int N, int k, double diff, bool original_value, bool found_value)
 {
-    cout << endl; cout << "Checking for inliers/outliers mask..." << endl; cout << endl;
-    cout << "Method: "; if (_method == RANSAC) cout << "RANSAC" << endl; else if (_method == cv::RHO) cout << "RHO" << endl; else cout << _method << endl;
-    cout << "Type of srcPoints: "; if ((j>-1) && (j<2)) cout << "Mat of CV_32FC2"; else  cout << "vector <Point2f>";
-    cout << "   Type of dstPoints: "; if (j % 2 == 0) cout << "Mat of CV_32FC2"; else cout << "vector <Point2f>"; cout << endl;
+    cout << endl;
+    cout << "Checking for inliers/outliers mask..." << endl;
+    cout << endl;
+    cout << "Method: ";
+    if (_method == RANSAC)
+        cout << "RANSAC" << endl;
+    else if (_method == cv::RHO)
+        cout << "RHO" << endl;
+    else
+        cout << _method << endl;
+    cout << "Type of srcPoints: ";
+    if ((j > -1) && (j < 2))
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << "   Type of dstPoints: ";
+    if (j % 2 == 0)
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << endl;
     cout << "Count of points: " << N << "   " << endl;
     cout << "Number of point: " << k << "   " << endl;
     cout << "Reprojection error for this point: " << diff << "   " << endl;
     cout << "Reprojection error threshold: " << reproj_threshold << "   " << endl;
-    cout << "Value of original mask: "<< original_value << "   Value of found mask: " << found_value << endl; cout << endl;
+    cout << "Value of original mask: " << original_value << "   Value of found mask: " << found_value << endl;
+    cout << endl;
 }
 
 void CV_HomographyTest::print_information_8(int _method, int j, int N, int k, int l, double diff)
 {
-    cout << endl; cout << "Checking for reprojection error of inlier..." << endl; cout << endl;
-    cout << "Method: "; if (_method == RANSAC) cout << "RANSAC" << endl; else if (_method == cv::RHO) cout << "RHO" << endl; else cout << _method << endl;
+    cout << endl;
+    cout << "Checking for reprojection error of inlier..." << endl;
+    cout << endl;
+    cout << "Method: ";
+    if (_method == RANSAC)
+        cout << "RANSAC" << endl;
+    else if (_method == cv::RHO)
+        cout << "RHO" << endl;
+    else
+        cout << _method << endl;
     cout << "Sigma of normal noise: " << sigma << endl;
-    cout << "Type of srcPoints: "; if ((j>-1) && (j<2)) cout << "Mat of CV_32FC2"; else  cout << "vector <Point2f>";
-    cout << "   Type of dstPoints: "; if (j % 2 == 0) cout << "Mat of CV_32FC2"; else cout << "vector <Point2f>"; cout << endl;
+    cout << "Type of srcPoints: ";
+    if ((j > -1) && (j < 2))
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << "   Type of dstPoints: ";
+    if (j % 2 == 0)
+        cout << "Mat of CV_32FC2";
+    else
+        cout << "vector <Point2f>";
+    cout << endl;
     cout << "Count of points: " << N << "   " << endl;
     cout << "Number of point: " << k << "   " << endl;
-    cout << "Norm type using in criteria: "; if (NORM_TYPE[l] == 1) cout << "INF"; else if (NORM_TYPE[l] == 2) cout << "L1"; else cout << "L2"; cout << endl;
+    cout << "Norm type using in criteria: ";
+    if (NORM_TYPE[l] == 1)
+        cout << "INF";
+    else if (NORM_TYPE[l] == 2)
+        cout << "L1";
+    else
+        cout << "L2";
+    cout << endl;
     cout << "Difference with noise of point: " << diff << endl;
-    cout << "Maxumum allowed difference: " << max_2diff << endl; cout << endl;
+    cout << "Maxumum allowed difference: " << max_2diff << endl;
+    cout << endl;
 }
 
 void CV_HomographyTest::run(int)
 {
     for (int N = 4; N <= MAX_COUNT_OF_POINTS; ++N)
     {
-        RNG& rng = ts->get_rng();
+        RNG &rng = ts->get_rng();
 
-        float *src_data = new float [2*N];
+        float *src_data = new float[2 * N];
 
         for (int i = 0; i < N; ++i)
         {
-            src_data[2*i] = (float)cvtest::randReal(rng)*image_size;
-            src_data[2*i+1] = (float)cvtest::randReal(rng)*image_size;
+            src_data[2 * i] = (float)cvtest::randReal(rng) * image_size;
+            src_data[2 * i + 1] = (float)cvtest::randReal(rng) * image_size;
         }
 
         cv::Mat src_mat_2f(1, N, CV_32FC2, src_data),
-        src_mat_2d(2, N, CV_32F, src_data),
-        src_mat_3d(3, N, CV_32F);
+            src_mat_2d(2, N, CV_32F, src_data),
+            src_mat_3d(3, N, CV_32F);
         cv::Mat dst_mat_2f, dst_mat_2d, dst_mat_3d;
 
-        vector <Point2f> src_vec, dst_vec;
+        vector<Point2f> src_vec, dst_vec;
 
         for (int i = 0; i < N; ++i)
         {
-            float *tmp = src_mat_2d.ptr<float>()+2*i;
+            float *tmp = src_mat_2d.ptr<float>() + 2 * i;
             src_mat_3d.at<float>(0, i) = tmp[0];
             src_mat_3d.at<float>(1, i) = tmp[1];
             src_mat_3d.at<float>(2, i) = 1.0f;
@@ -278,26 +472,27 @@ void CV_HomographyTest::run(int)
             src_vec.push_back(Point2f(tmp[0], tmp[1]));
         }
 
-        double fi = cvtest::randReal(rng)*2*CV_PI;
+        double fi = cvtest::randReal(rng) * 2 * CV_PI;
 
-        double t_x = cvtest::randReal(rng)*sqrt(image_size*1.0),
-        t_y = cvtest::randReal(rng)*sqrt(image_size*1.0);
+        double t_x = cvtest::randReal(rng) * sqrt(image_size * 1.0),
+               t_y = cvtest::randReal(rng) * sqrt(image_size * 1.0);
 
-        double Hdata[9] = { cos(fi), -sin(fi), t_x,
-                            sin(fi),  cos(fi), t_y,
-                            0.0f,     0.0f, 1.0f };
+        double Hdata[9] = {cos(fi), -sin(fi), t_x,
+                           sin(fi), cos(fi), t_y,
+                           0.0f, 0.0f, 1.0f};
 
         cv::Mat H_64(3, 3, CV_64F, Hdata), H_32;
 
         H_64.convertTo(H_32, CV_32F);
 
-        dst_mat_3d = H_32*src_mat_3d;
+        dst_mat_3d = H_32 * src_mat_3d;
 
-        dst_mat_2d.create(2, N, CV_32F); dst_mat_2f.create(1, N, CV_32FC2);
+        dst_mat_2d.create(2, N, CV_32F);
+        dst_mat_2f.create(1, N, CV_32FC2);
 
         for (int i = 0; i < N; ++i)
         {
-            float *tmp_2f = dst_mat_2f.ptr<float>()+2*i;
+            float *tmp_2f = dst_mat_2f.ptr<float>() + 2 * i;
             tmp_2f[0] = dst_mat_2d.at<float>(0, i) = dst_mat_3d.at<float>(0, i) /= dst_mat_3d.at<float>(2, i);
             tmp_2f[1] = dst_mat_2d.at<float>(1, i) = dst_mat_3d.at<float>(1, i) /= dst_mat_3d.at<float>(2, i);
             dst_mat_3d.at<float>(2, i) = 1.0f;
@@ -312,87 +507,101 @@ void CV_HomographyTest::run(int)
             {
             case 0:
             case LMEDS:
+            {
+                Mat H_res_64[4] = {cv::findHomography(src_mat_2f, dst_mat_2f, method),
+                                   cv::findHomography(src_mat_2f, dst_vec, method),
+                                   cv::findHomography(src_vec, dst_mat_2f, method),
+                                   cv::findHomography(src_vec, dst_vec, method)};
+
+                for (int j = 0; j < 4; ++j)
                 {
-                    Mat H_res_64 [4] = { cv::findHomography(src_mat_2f, dst_mat_2f, method),
-                                         cv::findHomography(src_mat_2f, dst_vec, method),
-                                         cv::findHomography(src_vec, dst_mat_2f, method),
-                                         cv::findHomography(src_vec, dst_vec, method) };
 
-                    for (int j = 0; j < 4; ++j)
+                    if (!check_matrix_size(H_res_64[j]))
                     {
+                        print_information_1(j, N, method, H_res_64[j]);
+                        CV_Error(CALIB3D_HOMOGRAPHY_ERROR_MATRIX_SIZE, MESSAGE_MATRIX_SIZE);
+                        return;
+                    }
 
-                        if (!check_matrix_size(H_res_64[j]))
+                    double diff;
+
+                    for (int k = 0; k < COUNT_NORM_TYPES; ++k)
+                        if (!check_matrix_diff(H_64, H_res_64[j], NORM_TYPE[k], diff))
                         {
-                            print_information_1(j, N, method, H_res_64[j]);
-                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_MATRIX_SIZE, MESSAGE_MATRIX_SIZE);
-                            return;
-                        }
-
-                        double diff;
-
-                        for (int k = 0; k < COUNT_NORM_TYPES; ++k)
-                            if (!check_matrix_diff(H_64, H_res_64[j], NORM_TYPE[k], diff))
-                            {
                             print_information_2(j, N, method, H_64, H_res_64[j], k, diff);
                             CV_Error(CALIB3D_HOMOGRAPHY_ERROR_MATRIX_DIFF, MESSAGE_MATRIX_DIFF);
                             return;
                         }
-                    }
-
-                    continue;
                 }
+
+                continue;
+            }
             case cv::RHO:
             case RANSAC:
+            {
+                cv::Mat mask[4];
+                double diff;
+
+                Mat H_res_64[4] = {cv::findHomography(src_mat_2f, dst_mat_2f, method, reproj_threshold, mask[0]),
+                                   cv::findHomography(src_mat_2f, dst_vec, method, reproj_threshold, mask[1]),
+                                   cv::findHomography(src_vec, dst_mat_2f, method, reproj_threshold, mask[2]),
+                                   cv::findHomography(src_vec, dst_vec, method, reproj_threshold, mask[3])};
+
+                for (int j = 0; j < 4; ++j)
                 {
-                    cv::Mat mask [4]; double diff;
 
-                    Mat H_res_64 [4] = { cv::findHomography(src_mat_2f, dst_mat_2f, method, reproj_threshold, mask[0]),
-                                         cv::findHomography(src_mat_2f, dst_vec, method, reproj_threshold, mask[1]),
-                                         cv::findHomography(src_vec, dst_mat_2f, method, reproj_threshold, mask[2]),
-                                         cv::findHomography(src_vec, dst_vec, method, reproj_threshold, mask[3]) };
-
-                    for (int j = 0; j < 4; ++j)
+                    if (!check_matrix_size(H_res_64[j]))
                     {
+                        print_information_1(j, N, method, H_res_64[j]);
+                        CV_Error(CALIB3D_HOMOGRAPHY_ERROR_MATRIX_SIZE, MESSAGE_MATRIX_SIZE);
+                        return;
+                    }
 
-                        if (!check_matrix_size(H_res_64[j]))
+                    for (int k = 0; k < COUNT_NORM_TYPES; ++k)
+                        if (!check_matrix_diff(H_64, H_res_64[j], NORM_TYPE[k], diff))
                         {
-                            print_information_1(j, N, method, H_res_64[j]);
-                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_MATRIX_SIZE, MESSAGE_MATRIX_SIZE);
-                            return;
-                        }
-
-                        for (int k = 0; k < COUNT_NORM_TYPES; ++k)
-                            if (!check_matrix_diff(H_64, H_res_64[j], NORM_TYPE[k], diff))
-                            {
                             print_information_2(j, N, method, H_64, H_res_64[j], k, diff);
                             CV_Error(CALIB3D_HOMOGRAPHY_ERROR_MATRIX_DIFF, MESSAGE_MATRIX_DIFF);
                             return;
                         }
 
-                        int code = check_ransac_mask_1(src_mat_2f, mask[j]);
+                    int code = check_ransac_mask_1(src_mat_2f, mask[j]);
 
-                        if (code)
+                    if (code)
+                    {
+                        print_information_3(method, j, N, mask[j]);
+
+                        switch (code)
                         {
-                            print_information_3(method, j, N, mask[j]);
-
-                            switch (code)
-                            {
-                            case 1: { CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_1); break; }
-                            case 2: { CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_2); break; }
-                            case 3: { CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_3); break; }
-
-                            default: break;
-                            }
-
-                            return;
+                        case 1:
+                        {
+                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_1);
+                            break;
+                        }
+                        case 2:
+                        {
+                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_2);
+                            break;
+                        }
+                        case 3:
+                        {
+                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_3);
+                            break;
                         }
 
-                    }
+                        default:
+                            break;
+                        }
 
-                    continue;
+                        return;
+                    }
                 }
 
-            default: continue;
+                continue;
+            }
+
+            default:
+                continue;
             }
         }
 
@@ -403,9 +612,10 @@ void CV_HomographyTest::run(int)
 
         for (int i = 0; i < N; ++i)
         {
-            float *a = noise_2f.ptr<float>()+2*i, *_2f = dst_mat_2f.ptr<float>()+2*i;
-            _2f[0] += a[0]; _2f[1] += a[1];
-            mask.at<bool>(i, 0) = !(sqrt(a[0]*a[0]+a[1]*a[1]) > reproj_threshold);
+            float *a = noise_2f.ptr<float>() + 2 * i, *_2f = dst_mat_2f.ptr<float>() + 2 * i;
+            _2f[0] += a[0];
+            _2f[1] += a[1];
+            mask.at<bool>(i, 0) = !(sqrt(a[0] * a[0] + a[1] * a[1]) > reproj_threshold);
         }
 
         for (int i = 0; i < METHODS_COUNT; ++i)
@@ -415,206 +625,220 @@ void CV_HomographyTest::run(int)
             {
             case 0:
             case LMEDS:
-                {
-                    Mat H_res_64 [4] = { cv::findHomography(src_mat_2f, dst_mat_2f),
-                                         cv::findHomography(src_mat_2f, dst_vec),
-                                         cv::findHomography(src_vec, dst_mat_2f),
-                                         cv::findHomography(src_vec, dst_vec) };
+            {
+                Mat H_res_64[4] = {cv::findHomography(src_mat_2f, dst_mat_2f),
+                                   cv::findHomography(src_mat_2f, dst_vec),
+                                   cv::findHomography(src_vec, dst_mat_2f),
+                                   cv::findHomography(src_vec, dst_vec)};
 
-                    for (int j = 0; j < 4; ++j)
+                for (int j = 0; j < 4; ++j)
+                {
+
+                    if (!check_matrix_size(H_res_64[j]))
+                    {
+                        print_information_1(j, N, method, H_res_64[j]);
+                        CV_Error(CALIB3D_HOMOGRAPHY_ERROR_MATRIX_SIZE, MESSAGE_MATRIX_SIZE);
+                        return;
+                    }
+
+                    Mat H_res_32;
+                    H_res_64[j].convertTo(H_res_32, CV_32F);
+
+                    cv::Mat dst_res_3d(3, N, CV_32F), noise_2d(2, N, CV_32F);
+
+                    for (int k = 0; k < N; ++k)
                     {
 
-                        if (!check_matrix_size(H_res_64[j]))
-                        {
-                            print_information_1(j, N, method, H_res_64[j]);
-                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_MATRIX_SIZE, MESSAGE_MATRIX_SIZE);
-                            return;
-                        }
+                        Mat tmp_mat_3d = H_res_32 * src_mat_3d.col(k);
 
-                        Mat H_res_32; H_res_64[j].convertTo(H_res_32, CV_32F);
+                        dst_res_3d.at<float>(0, k) = tmp_mat_3d.at<float>(0, 0) /= tmp_mat_3d.at<float>(2, 0);
+                        dst_res_3d.at<float>(1, k) = tmp_mat_3d.at<float>(1, 0) /= tmp_mat_3d.at<float>(2, 0);
+                        dst_res_3d.at<float>(2, k) = tmp_mat_3d.at<float>(2, 0) = 1.0f;
 
-                        cv::Mat dst_res_3d(3, N, CV_32F), noise_2d(2, N, CV_32F);
+                        float *a = noise_2f.ptr<float>() + 2 * k;
+                        noise_2d.at<float>(0, k) = a[0];
+                        noise_2d.at<float>(1, k) = a[1];
 
-                        for (int k = 0; k < N; ++k)
-                        {
-
-                            Mat tmp_mat_3d = H_res_32*src_mat_3d.col(k);
-
-                            dst_res_3d.at<float>(0, k) = tmp_mat_3d.at<float>(0, 0) /= tmp_mat_3d.at<float>(2, 0);
-                            dst_res_3d.at<float>(1, k) = tmp_mat_3d.at<float>(1, 0) /= tmp_mat_3d.at<float>(2, 0);
-                            dst_res_3d.at<float>(2, k) = tmp_mat_3d.at<float>(2, 0) = 1.0f;
-
-                            float *a = noise_2f.ptr<float>()+2*k;
-                            noise_2d.at<float>(0, k) = a[0]; noise_2d.at<float>(1, k) = a[1];
-
-                            for (int l = 0; l < COUNT_NORM_TYPES; ++l)
-                                if (cv::norm(tmp_mat_3d, dst_mat_3d.col(k), NORM_TYPE[l]) - cv::norm(noise_2d.col(k), NORM_TYPE[l]) > max_2diff)
-                                {
+                        for (int l = 0; l < COUNT_NORM_TYPES; ++l)
+                            if (cv::norm(tmp_mat_3d, dst_mat_3d.col(k), NORM_TYPE[l]) - cv::norm(noise_2d.col(k), NORM_TYPE[l]) > max_2diff)
+                            {
                                 print_information_4(method, j, N, k, l, cv::norm(tmp_mat_3d, dst_mat_3d.col(k), NORM_TYPE[l]) - cv::norm(noise_2d.col(k), NORM_TYPE[l]));
                                 CV_Error(CALIB3D_HOMOGRAPHY_ERROR_REPROJ_DIFF, MESSAGE_REPROJ_DIFF_1);
                                 return;
                             }
+                    }
 
-                        }
-
-                        for (int l = 0; l < COUNT_NORM_TYPES; ++l)
-                            if (cv::norm(dst_res_3d, dst_mat_3d, NORM_TYPE[l]) - cv::norm(noise_2d, NORM_TYPE[l]) > max_diff)
-                            {
+                    for (int l = 0; l < COUNT_NORM_TYPES; ++l)
+                        if (cv::norm(dst_res_3d, dst_mat_3d, NORM_TYPE[l]) - cv::norm(noise_2d, NORM_TYPE[l]) > max_diff)
+                        {
                             print_information_5(method, j, N, l, cv::norm(dst_res_3d, dst_mat_3d, NORM_TYPE[l]) - cv::norm(noise_2d, NORM_TYPE[l]));
                             CV_Error(CALIB3D_HOMOGRAPHY_ERROR_REPROJ_DIFF, MESSAGE_REPROJ_DIFF_2);
                             return;
                         }
-
-                    }
-
-                    continue;
                 }
+
+                continue;
+            }
             case cv::RHO:
             case RANSAC:
+            {
+                cv::Mat mask_res[4];
+
+                Mat H_res_64[4] = {cv::findHomography(src_mat_2f, dst_mat_2f, method, reproj_threshold, mask_res[0]),
+                                   cv::findHomography(src_mat_2f, dst_vec, method, reproj_threshold, mask_res[1]),
+                                   cv::findHomography(src_vec, dst_mat_2f, method, reproj_threshold, mask_res[2]),
+                                   cv::findHomography(src_vec, dst_vec, method, reproj_threshold, mask_res[3])};
+
+                for (int j = 0; j < 4; ++j)
                 {
-                    cv::Mat mask_res [4];
-
-                    Mat H_res_64 [4] = { cv::findHomography(src_mat_2f, dst_mat_2f, method, reproj_threshold, mask_res[0]),
-                                         cv::findHomography(src_mat_2f, dst_vec, method, reproj_threshold, mask_res[1]),
-                                         cv::findHomography(src_vec, dst_mat_2f, method, reproj_threshold, mask_res[2]),
-                                         cv::findHomography(src_vec, dst_vec, method, reproj_threshold, mask_res[3]) };
-
-                    for (int j = 0; j < 4; ++j)
+                    if (!check_matrix_size(H_res_64[j]))
                     {
-                        if (!check_matrix_size(H_res_64[j]))
+                        print_information_1(j, N, method, H_res_64[j]);
+                        CV_Error(CALIB3D_HOMOGRAPHY_ERROR_MATRIX_SIZE, MESSAGE_MATRIX_SIZE);
+                        return;
+                    }
+
+                    int code = check_ransac_mask_2(mask, mask_res[j]);
+
+                    if (code)
+                    {
+                        print_information_3(method, j, N, mask_res[j]);
+
+                        switch (code)
                         {
-                            print_information_1(j, N, method, H_res_64[j]);
-                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_MATRIX_SIZE, MESSAGE_MATRIX_SIZE);
+                        case 1:
+                        {
+                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_1);
+                            break;
+                        }
+                        case 2:
+                        {
+                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_3);
+                            break;
+                        }
+
+                        default:
+                            break;
+                        }
+
+                        return;
+                    }
+
+                    cv::Mat H_res_32;
+                    H_res_64[j].convertTo(H_res_32, CV_32F);
+
+                    cv::Mat dst_res_3d = H_res_32 * src_mat_3d;
+
+                    for (int k = 0; k < N; ++k)
+                    {
+                        dst_res_3d.at<float>(0, k) /= dst_res_3d.at<float>(2, k);
+                        dst_res_3d.at<float>(1, k) /= dst_res_3d.at<float>(2, k);
+                        dst_res_3d.at<float>(2, k) = 1.0f;
+
+                        float *p = dst_mat_2f.ptr<float>() + 2 * k;
+
+                        dst_mat_3d.at<float>(0, k) = p[0];
+                        dst_mat_3d.at<float>(1, k) = p[1];
+
+                        double diff = cv::norm(dst_res_3d.col(k), dst_mat_3d.col(k), NORM_L2);
+
+                        if (mask_res[j].at<bool>(k, 0) != (diff <= reproj_threshold))
+                        {
+                            print_information_6(method, j, N, k, diff, mask_res[j].at<bool>(k, 0));
+                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_4);
                             return;
                         }
 
-                        int code = check_ransac_mask_2(mask, mask_res[j]);
-
-                        if (code)
+                        if (mask.at<bool>(k, 0) && !mask_res[j].at<bool>(k, 0))
                         {
-                            print_information_3(method, j, N, mask_res[j]);
-
-                            switch (code)
-                            {
-                            case 1: { CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_1); break; }
-                            case 2: { CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_3); break; }
-
-                            default: break;
-                            }
-
+                            print_information_7(method, j, N, k, diff, mask.at<bool>(k, 0), mask_res[j].at<bool>(k, 0));
+                            CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_5);
                             return;
                         }
 
-                        cv::Mat H_res_32; H_res_64[j].convertTo(H_res_32, CV_32F);
-
-                        cv::Mat dst_res_3d = H_res_32*src_mat_3d;
-
-                        for (int k = 0; k < N; ++k)
+                        if (mask_res[j].at<bool>(k, 0))
                         {
-                            dst_res_3d.at<float>(0, k) /= dst_res_3d.at<float>(2, k);
-                            dst_res_3d.at<float>(1, k) /= dst_res_3d.at<float>(2, k);
-                            dst_res_3d.at<float>(2, k) = 1.0f;
+                            float *a = noise_2f.ptr<float>() + 2 * k;
+                            dst_mat_3d.at<float>(0, k) -= a[0];
+                            dst_mat_3d.at<float>(1, k) -= a[1];
 
-                            float *p = dst_mat_2f.ptr<float>()+2*k;
+                            cv::Mat noise_2d(2, 1, CV_32F);
+                            noise_2d.at<float>(0, 0) = a[0];
+                            noise_2d.at<float>(1, 0) = a[1];
 
-                            dst_mat_3d.at<float>(0, k) = p[0];
-                            dst_mat_3d.at<float>(1, k) = p[1];
-
-                            double diff = cv::norm(dst_res_3d.col(k), dst_mat_3d.col(k), NORM_L2);
-
-                            if (mask_res[j].at<bool>(k, 0) != (diff <= reproj_threshold))
+                            for (int l = 0; l < COUNT_NORM_TYPES; ++l)
                             {
-                                print_information_6(method, j, N, k, diff, mask_res[j].at<bool>(k, 0));
-                                CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_4);
-                                return;
-                            }
+                                diff = cv::norm(dst_res_3d.col(k), dst_mat_3d.col(k), NORM_TYPE[l]);
 
-                            if (mask.at<bool>(k, 0) && !mask_res[j].at<bool>(k, 0))
-                            {
-                                print_information_7(method, j, N, k, diff, mask.at<bool>(k, 0), mask_res[j].at<bool>(k, 0));
-                                CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_MASK, MESSAGE_RANSAC_MASK_5);
-                                return;
-                            }
-
-                            if (mask_res[j].at<bool>(k, 0))
-                            {
-                                float *a = noise_2f.ptr<float>()+2*k;
-                                dst_mat_3d.at<float>(0, k) -= a[0];
-                                dst_mat_3d.at<float>(1, k) -= a[1];
-
-                                cv::Mat noise_2d(2, 1, CV_32F);
-                                noise_2d.at<float>(0, 0) = a[0]; noise_2d.at<float>(1, 0) = a[1];
-
-                                for (int l = 0; l < COUNT_NORM_TYPES; ++l)
+                                if (diff - cv::norm(noise_2d, NORM_TYPE[l]) > max_2diff)
                                 {
-                                    diff = cv::norm(dst_res_3d.col(k), dst_mat_3d.col(k), NORM_TYPE[l]);
-
-                                    if (diff - cv::norm(noise_2d, NORM_TYPE[l]) > max_2diff)
-                                    {
-                                        print_information_8(method, j, N, k, l, diff - cv::norm(noise_2d, NORM_TYPE[l]));
-                                        CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_DIFF, MESSAGE_RANSAC_DIFF);
-                                        return;
-                                    }
+                                    print_information_8(method, j, N, k, l, diff - cv::norm(noise_2d, NORM_TYPE[l]));
+                                    CV_Error(CALIB3D_HOMOGRAPHY_ERROR_RANSAC_DIFF, MESSAGE_RANSAC_DIFF);
+                                    return;
                                 }
                             }
                         }
                     }
-
-                    continue;
                 }
 
-            default: continue;
+                continue;
+            }
+
+            default:
+                continue;
             }
         }
 
-        delete[]src_data;
+        delete[] src_data;
         src_data = NULL;
     }
 }
 
-TEST(Calib3d_Homography, accuracy) { CV_HomographyTest test; test.safe_run(); }
+TEST(Calib3d_Homography, accuracy)
+{
+    CV_HomographyTest test;
+    test.safe_run();
+}
 
 TEST(Calib3d_Homography, EKcase)
 {
     float pt1data[] =
-    {
-        2.80073029e+002f, 2.39591217e+002f, 2.21912201e+002f, 2.59783997e+002f,
-        2.16053192e+002f, 2.78826569e+002f, 2.22782532e+002f, 2.82330383e+002f,
-        2.09924820e+002f, 2.89122559e+002f, 2.11077698e+002f, 2.89384674e+002f,
-        2.25287689e+002f, 2.88795532e+002f, 2.11180801e+002f, 2.89653503e+002f,
-        2.24126404e+002f, 2.90466064e+002f, 2.10914429e+002f, 2.90886963e+002f,
-        2.23439362e+002f, 2.91657715e+002f, 2.24809387e+002f, 2.91891602e+002f,
-        2.09809082e+002f, 2.92891113e+002f, 2.08771164e+002f, 2.93093231e+002f,
-        2.23160095e+002f, 2.93259460e+002f, 2.07874023e+002f, 2.93989990e+002f,
-        2.08963638e+002f, 2.94209839e+002f, 2.23963165e+002f, 2.94479645e+002f,
-        2.23241791e+002f, 2.94887817e+002f, 2.09438782e+002f, 2.95233337e+002f,
-        2.08901886e+002f, 2.95762878e+002f, 2.21867981e+002f, 2.95747711e+002f,
-        2.24195511e+002f, 2.98270905e+002f, 2.09331345e+002f, 3.05958191e+002f,
-        2.24727875e+002f, 3.07186035e+002f, 2.26718842e+002f, 3.08095795e+002f,
-        2.25363953e+002f, 3.08200226e+002f, 2.19897797e+002f, 3.13845093e+002f,
-        2.25013474e+002f, 3.15558777e+002f
-    };
+        {
+            2.80073029e+002f, 2.39591217e+002f, 2.21912201e+002f, 2.59783997e+002f,
+            2.16053192e+002f, 2.78826569e+002f, 2.22782532e+002f, 2.82330383e+002f,
+            2.09924820e+002f, 2.89122559e+002f, 2.11077698e+002f, 2.89384674e+002f,
+            2.25287689e+002f, 2.88795532e+002f, 2.11180801e+002f, 2.89653503e+002f,
+            2.24126404e+002f, 2.90466064e+002f, 2.10914429e+002f, 2.90886963e+002f,
+            2.23439362e+002f, 2.91657715e+002f, 2.24809387e+002f, 2.91891602e+002f,
+            2.09809082e+002f, 2.92891113e+002f, 2.08771164e+002f, 2.93093231e+002f,
+            2.23160095e+002f, 2.93259460e+002f, 2.07874023e+002f, 2.93989990e+002f,
+            2.08963638e+002f, 2.94209839e+002f, 2.23963165e+002f, 2.94479645e+002f,
+            2.23241791e+002f, 2.94887817e+002f, 2.09438782e+002f, 2.95233337e+002f,
+            2.08901886e+002f, 2.95762878e+002f, 2.21867981e+002f, 2.95747711e+002f,
+            2.24195511e+002f, 2.98270905e+002f, 2.09331345e+002f, 3.05958191e+002f,
+            2.24727875e+002f, 3.07186035e+002f, 2.26718842e+002f, 3.08095795e+002f,
+            2.25363953e+002f, 3.08200226e+002f, 2.19897797e+002f, 3.13845093e+002f,
+            2.25013474e+002f, 3.15558777e+002f};
 
     float pt2data[] =
-    {
-        1.84072723e+002f, 1.43591202e+002f, 1.25912483e+002f, 1.63783859e+002f,
-        2.06439407e+002f, 2.20573929e+002f, 1.43801437e+002f, 1.80703903e+002f,
-        9.77904129e+000f, 2.49660202e+002f, 1.38458405e+001f, 2.14502701e+002f,
-        1.50636337e+002f, 2.15597183e+002f, 6.43103180e+001f, 2.51667648e+002f,
-        1.54952499e+002f, 2.20780014e+002f, 1.26638412e+002f, 2.43040924e+002f,
-        3.67568909e+002f, 1.83624954e+001f, 1.60657944e+002f, 2.21794052e+002f,
-        -1.29507828e+000f, 3.32472443e+002f, 8.51442242e+000f, 4.15561554e+002f,
-        1.27161377e+002f, 1.97260361e+002f, 5.40714645e+000f, 4.90978302e+002f,
-        2.25571690e+001f, 3.96912415e+002f, 2.95664978e+002f, 7.36064959e+000f,
-        1.27241104e+002f, 1.98887573e+002f, -1.25569367e+000f, 3.87713226e+002f,
-        1.04194012e+001f, 4.31495758e+002f, 1.25868874e+002f, 1.99751617e+002f,
-        1.28195480e+002f, 2.02270355e+002f, 2.23436356e+002f, 1.80489182e+002f,
-        1.28727692e+002f, 2.11185410e+002f, 2.03336639e+002f, 2.52182083e+002f,
-        1.29366486e+002f, 2.12201904e+002f, 1.23897598e+002f, 2.17847351e+002f,
-        1.29015259e+002f, 2.19560623e+002f
-    };
+        {
+            1.84072723e+002f, 1.43591202e+002f, 1.25912483e+002f, 1.63783859e+002f,
+            2.06439407e+002f, 2.20573929e+002f, 1.43801437e+002f, 1.80703903e+002f,
+            9.77904129e+000f, 2.49660202e+002f, 1.38458405e+001f, 2.14502701e+002f,
+            1.50636337e+002f, 2.15597183e+002f, 6.43103180e+001f, 2.51667648e+002f,
+            1.54952499e+002f, 2.20780014e+002f, 1.26638412e+002f, 2.43040924e+002f,
+            3.67568909e+002f, 1.83624954e+001f, 1.60657944e+002f, 2.21794052e+002f,
+            -1.29507828e+000f, 3.32472443e+002f, 8.51442242e+000f, 4.15561554e+002f,
+            1.27161377e+002f, 1.97260361e+002f, 5.40714645e+000f, 4.90978302e+002f,
+            2.25571690e+001f, 3.96912415e+002f, 2.95664978e+002f, 7.36064959e+000f,
+            1.27241104e+002f, 1.98887573e+002f, -1.25569367e+000f, 3.87713226e+002f,
+            1.04194012e+001f, 4.31495758e+002f, 1.25868874e+002f, 1.99751617e+002f,
+            1.28195480e+002f, 2.02270355e+002f, 2.23436356e+002f, 1.80489182e+002f,
+            1.28727692e+002f, 2.11185410e+002f, 2.03336639e+002f, 2.52182083e+002f,
+            1.29366486e+002f, 2.12201904e+002f, 1.23897598e+002f, 2.17847351e+002f,
+            1.29015259e+002f, 2.19560623e+002f};
 
-    int npoints = (int)(sizeof(pt1data)/sizeof(pt1data[0])/2);
+    int npoints = (int)(sizeof(pt1data) / sizeof(pt1data[0]) / 2);
 
     Mat p1(1, npoints, CV_32FC2, pt1data);
     Mat p2(1, npoints, CV_32FC2, pt2data);
@@ -626,7 +850,7 @@ TEST(Calib3d_Homography, EKcase)
     cv::transpose(mask, mask);
     Mat p3, mask2;
     int ninliers = countNonZero(mask);
-    Mat nmask[] = { mask, mask };
+    Mat nmask[] = {mask, mask};
     merge(nmask, 2, mask2);
     perspectiveTransform(p1, p3, h);
     mask2 = mask2.reshape(1);
@@ -646,55 +870,58 @@ TEST(Calib3d_Homography, fromImages)
     Ptr<ORB> orb = ORB::create();
     vector<KeyPoint> keypoints_1, keypoints_2;
     Mat descriptors_1, descriptors_2;
-    orb->detectAndCompute( img_1, Mat(), keypoints_1, descriptors_1, false );
-    orb->detectAndCompute( img_2, Mat(), keypoints_2, descriptors_2, false );
+    orb->detectAndCompute(img_1, Mat(), Mat(), keypoints_1, descriptors_1, false);
+    orb->detectAndCompute(img_2, Mat(), Mat(), keypoints_2, descriptors_2, false);
 
     //-- Step 3: Matching descriptor vectors using Brute Force matcher
-    BFMatcher  matcher(NORM_HAMMING,false);
-    std::vector< DMatch > matches;
-    matcher.match( descriptors_1, descriptors_2, matches );
+    BFMatcher matcher(NORM_HAMMING, false);
+    std::vector<DMatch> matches;
+    matcher.match(descriptors_1, descriptors_2, matches);
 
-    double max_dist = 0; double min_dist = 100;
+    double max_dist = 0;
+    double min_dist = 100;
     //-- Quick calculation of max and min distances between keypoints
-    for( int i = 0; i < descriptors_1.rows; i++ )
+    for (int i = 0; i < descriptors_1.rows; i++)
     {
         double dist = matches[i].distance;
-        if( dist < min_dist ) min_dist = dist;
-        if( dist > max_dist ) max_dist = dist;
+        if (dist < min_dist)
+            min_dist = dist;
+        if (dist > max_dist)
+            max_dist = dist;
     }
 
     //-- Draw only "good" matches (i.e. whose distance is less than 3*min_dist )
-    std::vector< DMatch > good_matches;
-    for( int i = 0; i < descriptors_1.rows; i++ )
+    std::vector<DMatch> good_matches;
+    for (int i = 0; i < descriptors_1.rows; i++)
     {
-        if( matches[i].distance <= 100 )
-            good_matches.push_back( matches[i]);
+        if (matches[i].distance <= 100)
+            good_matches.push_back(matches[i]);
     }
 
     //-- Localize the model
     std::vector<Point2f> pointframe1;
     std::vector<Point2f> pointframe2;
-    for( int i = 0; i < (int)good_matches.size(); i++ )
+    for (int i = 0; i < (int)good_matches.size(); i++)
     {
         //-- Get the keypoints from the good matches
-        pointframe1.push_back( keypoints_1[ good_matches[i].queryIdx ].pt );
-        pointframe2.push_back( keypoints_2[ good_matches[i].trainIdx ].pt );
+        pointframe1.push_back(keypoints_1[good_matches[i].queryIdx].pt);
+        pointframe2.push_back(keypoints_2[good_matches[i].trainIdx].pt);
     }
 
     Mat H0, H1, inliers0, inliers1;
     double min_t0 = DBL_MAX, min_t1 = DBL_MAX;
-    for( int i = 0; i < 10; i++ )
+    for (int i = 0; i < 10; i++)
     {
         double t = (double)getTickCount();
-        H0 = findHomography( pointframe1, pointframe2, RANSAC, 3.0, inliers0 );
+        H0 = findHomography(pointframe1, pointframe2, RANSAC, 3.0, inliers0);
         t = (double)getTickCount() - t;
         min_t0 = std::min(min_t0, t);
     }
     int ninliers0 = countNonZero(inliers0);
-    for( int i = 0; i < 10; i++ )
+    for (int i = 0; i < 10; i++)
     {
         double t = (double)getTickCount();
-        H1 = findHomography( pointframe1, pointframe2, RHO, 3.0, inliers1 );
+        H1 = findHomography(pointframe1, pointframe2, RHO, 3.0, inliers1);
         t = (double)getTickCount() - t;
         min_t1 = std::min(min_t1, t);
     }
@@ -703,7 +930,7 @@ TEST(Calib3d_Homography, fromImages)
     printf("nfeatures1 = %d, nfeatures2=%d, matches=%d, ninliers(RANSAC)=%d, "
            "time(RANSAC)=%.2fmsec, ninliers(RHO)=%d, time(RHO)=%.2fmsec\n",
            (int)keypoints_1.size(), (int)keypoints_2.size(),
-           (int)good_matches.size(), ninliers0, min_t0*1000./freq, ninliers1, min_t1*1000./freq);
+           (int)good_matches.size(), ninliers0, min_t0 * 1000. / freq, ninliers1, min_t1 * 1000. / freq);
 
     ASSERT_TRUE(!H0.empty());
     ASSERT_GE(ninliers0, 80);
@@ -711,4 +938,5 @@ TEST(Calib3d_Homography, fromImages)
     ASSERT_GE(ninliers1, 80);
 }
 
-}} // namespace
+} // namespace
+} // namespace opencv_test

@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
             // and compute their descriptors with method  compute
             b->compute(img1, keyImg1, descImg1);
             // or detect and compute descriptors in one step
-            b->detectAndCompute(img2, Mat(),keyImg2, descImg2,false);
+            b->detectAndCompute(img2, Mat(), Mat(), keyImg2, descImg2, false);
             // Match method loop
             for (itMatcher = typeAlgoMatch.begin(); itMatcher != typeAlgoMatch.end(); ++itMatcher){
                 descriptorMatcher = DescriptorMatcher::create(*itMatcher);

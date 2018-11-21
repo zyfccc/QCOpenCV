@@ -222,7 +222,7 @@ CUDA_TEST_P(ORB, Accuracy)
         {
             std::vector<cv::KeyPoint> keypoints;
             cv::cuda::GpuMat descriptors;
-            orb->detectAndComputeAsync(loadMat(image), loadMat(mask), rawOut(keypoints), descriptors);
+            orb->detectAndComputeAsync(loadMat(image), loadMat(mask), loadMat(mask), rawOut(keypoints), descriptors);
         }
         catch (const cv::Exception& e)
         {
@@ -233,13 +233,13 @@ CUDA_TEST_P(ORB, Accuracy)
     {
         std::vector<cv::KeyPoint> keypoints;
         cv::cuda::GpuMat descriptors;
-        orb->detectAndCompute(loadMat(image), loadMat(mask), keypoints, descriptors);
+        orb->detectAndCompute(loadMat(image), loadMat(mask), loadMat(mask), keypoints, descriptors);
 
         cv::Ptr<cv::ORB> orb_gold = cv::ORB::create(nFeatures, scaleFactor, nLevels, edgeThreshold, firstLevel, WTA_K, scoreType, patchSize);
 
         std::vector<cv::KeyPoint> keypoints_gold;
         cv::Mat descriptors_gold;
-        orb_gold->detectAndCompute(image, mask, keypoints_gold, descriptors_gold);
+        orb_gold->detectAndCompute(image, mask, mask, keypoints_gold, descriptors_gold);
 
         cv::BFMatcher matcher(cv::NORM_HAMMING);
         std::vector<cv::DMatch> matches;

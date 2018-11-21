@@ -349,7 +349,7 @@ namespace
                  int fastThreshold,
                  bool blurForDescriptor);
 
-        virtual void detectAndCompute(InputArray _image, InputArray _mask, std::vector<KeyPoint>& keypoints, OutputArray _descriptors, bool useProvidedKeypoints);
+        virtual void detectAndCompute(InputArray _image, InputArray _mask, InputArray _saliency, std::vector<KeyPoint> &keypoints, OutputArray _descriptors, bool useProvidedKeypoints);
         virtual void detectAndComputeAsync(InputArray _image, InputArray _mask, OutputArray _keypoints, OutputArray _descriptors, bool useProvidedKeypoints, Stream& stream);
 
         virtual void convert(InputArray _gpu_keypoints, std::vector<KeyPoint>& keypoints);
@@ -575,7 +575,7 @@ namespace
         return pow(scaleFactor, level - firstLevel);
     }
 
-    void ORB_Impl::detectAndCompute(InputArray _image, InputArray _mask, std::vector<KeyPoint>& keypoints, OutputArray _descriptors, bool useProvidedKeypoints)
+    void ORB_Impl::detectAndCompute(InputArray _image, InputArray _mask, InputArray _saliency, std::vector<KeyPoint> &keypoints, OutputArray _descriptors, bool useProvidedKeypoints)
     {
         using namespace cv::cuda::device::orb;
         if (useProvidedKeypoints)

@@ -53,7 +53,7 @@ void Tracker::setFirstFrame(const Mat frame, vector<Point2f> bb, string title, S
     first_frame = frame.clone();
     cv::Mat matMask = cv::Mat::zeros(frame.size(), CV_8UC1);
     cv::fillPoly(matMask, &ptContain, &iSize, 1, cv::Scalar::all(255));
-    detector->detectAndCompute(first_frame, matMask, first_kp, first_desc);
+    detector->detectAndCompute(first_frame, matMask, matMask, first_kp, first_desc);
     stats.keypoints = (int)first_kp.size();
     drawBoundingBox(first_frame, bb);
     putText(first_frame, title, Point(0, 60), FONT_HERSHEY_PLAIN, 5, Scalar::all(0), 4);
@@ -68,7 +68,7 @@ Mat Tracker::process(const Mat frame, Stats& stats)
     Mat desc;
 
     tm.start();
-    detector->detectAndCompute(frame, noArray(), kp, desc);
+    detector->detectAndCompute(frame, noArray(), noArray(), kp, desc);
     stats.keypoints = (int)kp.size();
 
     vector< vector<DMatch> > matches;

@@ -471,15 +471,6 @@ TEST_P(DescriptorImage, no_crash)
         } \
         ASSERT_EQ(descriptors.rows, (int)keypoints.size());
 
-        TEST_DETECTOR("AKAZE:MLDB", akaze_mldb);
-        TEST_DETECTOR("AKAZE:MLDB_UPRIGHT", akaze_mldb_upright);
-        TEST_DETECTOR("AKAZE:MLDB_256", akaze_mldb_256);
-        TEST_DETECTOR("AKAZE:MLDB_UPRIGHT_256", akaze_mldb_upright_256);
-        TEST_DETECTOR("AKAZE:KAZE", akaze_kaze);
-        TEST_DETECTOR("AKAZE:KAZE_UPRIGHT", akaze_kaze_upright);
-        TEST_DETECTOR("KAZE", kaze);
-        TEST_DETECTOR("ORB", orb);
-        TEST_DETECTOR("BRISK", brisk);
     }
 }
 

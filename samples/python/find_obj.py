@@ -168,8 +168,8 @@ if __name__ == '__main__':
 
     print('using', feature_name)
 
-    kp1, desc1 = detector.detectAndCompute(img1, None)
-    kp2, desc2 = detector.detectAndCompute(img2, None)
+    kp1, desc1 = detector.detectAndCompute(img1, None, None)
+    kp2, desc2 = detector.detectAndCompute(img2, None, None)
     print('img1 - %d features, img2 - %d features' % (len(kp1), len(kp2)))
 
     def match_and_draw(win):

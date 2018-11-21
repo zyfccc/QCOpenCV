@@ -7948,7 +7948,7 @@ public:
     : threshold(_threshold), nonmaxSuppression(_nonmaxSuppression), type((short)_type)
     {}
 
-    void detect( InputArray _image, std::vector<KeyPoint>& keypoints, InputArray _mask ) CV_OVERRIDE
+    void detect(InputArray _image, std::vector<KeyPoint> &keypoints, InputArray _mask, InputArray _saliency) CV_OVERRIDE
     {
         CV_INSTRUMENT_REGION();
 

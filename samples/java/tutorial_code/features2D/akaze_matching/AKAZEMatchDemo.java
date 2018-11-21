@@ -71,8 +71,8 @@ class AKAZEMatch {
         AKAZE akaze = AKAZE.create();
         MatOfKeyPoint kpts1 = new MatOfKeyPoint(), kpts2 = new MatOfKeyPoint();
         Mat desc1 = new Mat(), desc2 = new Mat();
-        akaze.detectAndCompute(img1, new Mat(), kpts1, desc1);
-        akaze.detectAndCompute(img2, new Mat(), kpts2, desc2);
+        akaze.detectAndCompute(img1, new Mat(), new Mat(),kpts1, desc1);
+        akaze.detectAndCompute(img2, new Mat(), new Mat(),kpts2, desc2);
         //! [AKAZE]
 
         //! [2-nn matching]
